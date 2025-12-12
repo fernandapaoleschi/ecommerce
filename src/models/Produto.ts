@@ -43,26 +43,6 @@ export abstract class Produto{
         this._quantidade = quantidade;
     }
 
-    public adicionarEstoque(qtd: number): void{
-        if(qtd>0){
-            this._quantidade += qtd;
-        } else {
-            console.log("Quantidade inválida para entrada de estoque");
-        }
-
-    }
-
-    public removerEstoque(qtd: number): boolean{
-        if(qtd>0 && this._quantidade >= qtd){
-            this._quantidade -= qtd;
-            return true;
-        }else{
-            console.log("Estoque insuficiente ou quantidade inválida.");
-            return false;
-        }
-        
-    }
-
     public visualizar(): void {
     console.log(`ID: ${this._id}`);
     console.log(`Nome: ${this._nome}`);

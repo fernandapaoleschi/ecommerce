@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import readlinesync = require("readline-sync");
 import { ProdutoDecoracao } from "./src/models/ProdutoDecoracao";
 import { ProdutoVestuario } from "./src/models/ProdutoVestuario";
