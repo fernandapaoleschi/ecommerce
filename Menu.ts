@@ -1,8 +1,8 @@
 import chalk from "chalk";
 import readlinesync = require("readline-sync");
-import { ProdutoDecoracao } from "./scr/models/ProdutoDecoracao";
-import { ProdutoVestuario } from "./scr/models/ProdutoVestuario";
-import { ProdutoController } from "./scr/controller/ProdutoController";
+import { ProdutoDecoracao } from "./src/models/ProdutoDecoracao";
+import { ProdutoVestuario } from "./src/models/ProdutoVestuario";
+import { ProdutoController } from "./src/controller/ProdutoController";
 
 export function main() {
 
@@ -12,7 +12,7 @@ export function main() {
 
     // Variáveis Auxiliares
     let opcao, id, tipo, quantidade: number;
-    let nome, material, tamanho, ambiente: string;
+    let nome, material, tamanho, ambiente, tecido: string;
     let preco: number;
 
     // Tipos de Produto
@@ -103,23 +103,28 @@ export function main() {
                 quantidade = readlinesync.questionInt("Quantidade: ");
 
                 id = produtos.gerarId();
-                if (tipo == 1) {
-                    material = readlinesync.question("Material: ");
-                    ambiente = readlinesync.question("Ambiente: ");
+                switch (tipo) {
+                    case 1:
+                        material = readlinesync.question("Material: ");
+                        ambiente = readlinesync.question("Ambiente: ");
 
-                    produtos.cadastrar(
-                        new ProdutoDecoracao(id, nome, preco, quantidade, material, ambiente)
-                    );
+                        produtos.cadastrar(
+                            new ProdutoDecoracao(id, nome, preco, quantidade, material, ambiente)
+                        );
+                        break;
 
-                } else if (tipo == 2) {
-                    material = readlinesync.question("Material: ");
-                    tamanho = readlinesync.question("Tamanho (PP/P/M/G/GG): ");
+                    case 2:
+                        tecido = readlinesync.question("Tecido: ");
+                        tamanho = readlinesync.question("Tamanho (PP/P/M/G/GG): ");
 
-                    produtos.cadastrar(
-                        new ProdutoVestuario(id, nome, preco, quantidade, material, tamanho)
-                    );
-                } else {
-                    console.log("Tipo inválido!");
+                        produtos.cadastrar(
+                            new ProdutoVestuario(id, nome, preco, quantidade, tecido, tamanho)
+                        );
+                        break;
+
+                    default:
+                        console.log("Tipo inválido!");
+                        break;
                 }
 
                 keyPress()
@@ -184,14 +189,20 @@ export function main() {
                 break;
             case 6:
                 console.log("\n\nEntrada de estoque\n\n");
-
-                keyPress()
+                id = readlinesync.questionInt("Digite o ID: ");
+                quantidade = readlinesync.questionInt("Quantidade: ");
+                produtos.entradaEstoque(id, quantidade);
+                keyPress();
                 break;
+
             case 7:
                 console.log("\n\nSaída de estoque\n\n");
-
-                keyPress()
+                id = readlinesync.questionInt("Digite o ID: ");
+                quantidade = readlinesync.questionInt("Quantidade: ");
+                produtos.saidaEstoque(id, quantidade);
+                keyPress();
                 break;
+
             case 8:
                 console.log("\n\nListar produtos por categoria\n\n");
 
@@ -214,9 +225,9 @@ export function main() {
 
 export function sobre(): void {
     console.log("\n*****************************************************");
-    console.log("Projeto Desenvolvido por: ");
-    console.log("Generation Brasil - generation@generation.org");
-    console.log("github.com/conteudoGeneration");
+    console.log("Projeto Desenvolvido por: Fernanda Paoleschi Santos ");
+    console.log("Generation Brasil - fernandas1@generation.org");
+    console.log("github.com/fernandapaoleschi");
     console.log("*****************************************************");
 }
 function keyPress(): void {
