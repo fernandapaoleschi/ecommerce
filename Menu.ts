@@ -1,22 +1,73 @@
 import chalk from "chalk";
 import readlinesync = require("readline-sync");
-import { Produto } from "./scr/models/Produto";
 import { ProdutoDecoracao } from "./scr/models/ProdutoDecoracao";
 import { ProdutoVestuario } from "./scr/models/ProdutoVestuario";
+import { ProdutoController } from "./scr/controller/ProdutoController";
 
-export function main(){
-    let opcao: number;
+export function main() {
 
-    // Objeto da Classe ProdutoVestuario (Teste)
-    const vestuario: ProdutoVestuario = new ProdutoVestuario(2, "Blusa Crochê", 120.00, 3, "Algodão", "M");
-    vestuario.visualizar();
 
-    // Objeto da Classe ProdutoDecoracao (Teste)
-    const decoracao: ProdutoDecoracao = new ProdutoDecoracao(3, "Quadro Macramê", 150.00, 2, "Fio de algodão", "Sala");
-    decoracao.visualizar();
+    // Instância da Classe ProdutoController
+    let produtos: ProdutoController = new ProdutoController();
 
-    while(true){
-        console.log("================================================");        
+    // Variáveis Auxiliares
+    let opcao, id, tipo, quantidade: number;
+    let nome, material, tamanho, ambiente: string;
+    let preco: number;
+
+    // Tipos de Produto
+    const tiposProdutos = ["Decoração", "Vestuário"];
+    console.log("\nCriar Produtos\n");
+
+    // Produto de Vestuário
+    let pv1: ProdutoVestuario = new ProdutoVestuario(
+        produtos.gerarId(),
+        "Blusa Crochê",
+        120.00,
+        3,
+        "Algodão",
+        "M"
+    );
+    produtos.cadastrar(pv1);
+
+    // Produto de Vestuário
+    let pv2: ProdutoVestuario = new ProdutoVestuario(
+        produtos.gerarId(),
+        "Saia Artesanal",
+        150.00,
+        2,
+        "Linho",
+        "G"
+    );
+    produtos.cadastrar(pv2);
+
+    // Produto de Decoração
+    let pd1: ProdutoDecoracao = new ProdutoDecoracao(
+        produtos.gerarId(),
+        "Vaso de Cerâmica",
+        80.00,
+        5,
+        "Cerâmica",
+        "Sala"
+    );
+    produtos.cadastrar(pd1);
+
+    // Produto de Decoração
+    let pd2: ProdutoDecoracao = new ProdutoDecoracao(
+        produtos.gerarId(),
+        "Quadro Macramê",
+        150.00,
+        1,
+        "Fio de algodão",
+        "Quarto"
+    );
+    produtos.cadastrar(pd2);
+
+    // Listar todos os produtos
+    produtos.listarTodos();
+
+    while (true) {
+        console.log("================================================");
         console.log("======= E-COMMERCE | CONTROLE DE ESTOQUE =======");
         console.log("================================================");
         console.log("          1- Cadastrar produto                  ");
@@ -33,16 +84,43 @@ export function main(){
         console.log("Entre com a opção desejada: ");
         opcao = readlinesync.questionInt("");
 
-        if(opcao == 9){
+        if (opcao == 9) {
             console.log("\nEncerrando o sistema de E-commerce...");
             console.log("Até a próxima!\n");
             sobre();
             process.exit(0);
         }
 
-        switch(opcao) {
+        switch (opcao) {
             case 1:
                 console.log("\n\nCadastrar produto\n\n");
+                console.log("Tipo do produto:");
+                console.log("1 - " + tiposProdutos[0]);
+                console.log("2 - " + tiposProdutos[1]);
+                tipo = readlinesync.questionInt("Escolha: ");
+                nome = readlinesync.question("Nome: ");
+                preco = readlinesync.questionFloat("Preço: ");
+                quantidade = readlinesync.questionInt("Quantidade: ");
+
+                id = produtos.gerarId();
+                if (tipo == 1) {
+                    material = readlinesync.question("Material: ");
+                    ambiente = readlinesync.question("Ambiente: ");
+
+                    produtos.cadastrar(
+                        new ProdutoDecoracao(id, nome, preco, quantidade, material, ambiente)
+                    );
+
+                } else if (tipo == 2) {
+                    material = readlinesync.question("Material: ");
+                    tamanho = readlinesync.question("Tamanho (PP/P/M/G/GG): ");
+
+                    produtos.cadastrar(
+                        new ProdutoVestuario(id, nome, preco, quantidade, material, tamanho)
+                    );
+                } else {
+                    console.log("Tipo inválido!");
+                }
 
                 keyPress()
                 break;
@@ -50,20 +128,57 @@ export function main(){
             case 2:
                 console.log("\n\nListar todos os produtos\n\n");
 
+                produtos.listarTodos();
+
                 keyPress()
                 break;
             case 3:
                 console.log("\n\nBuscar produto por ID\n\n");
+
+                id = readlinesync.questionInt("Digite o ID: ");
+                produtos.procurarPorId(id);
 
                 keyPress()
                 break;
             case 4:
                 console.log("\n\nAtualizar produto\n\n");
 
+                console.log("Tipo do produto:");
+                console.log("1 - " + tiposProdutos[0]);
+                console.log("2 - " + tiposProdutos[1]);
+                tipo = readlinesync.questionInt("Escolha: ");
+
+                id = readlinesync.questionInt("Digite o ID do produto: ");
+                nome = readlinesync.question("Nome: ");
+                preco = readlinesync.questionFloat("Preço: ");
+                quantidade = readlinesync.questionInt("Quantidade: ");
+
+                if (tipo == 1) {
+                    material = readlinesync.question("Material: ");
+                    ambiente = readlinesync.question("Ambiente: ");
+
+                    produtos.atualizar(
+                        new ProdutoDecoracao(id, nome, preco, quantidade, material, ambiente)
+                    );
+
+                } else if (tipo == 2) {
+                    material = readlinesync.question("Material: ");
+                    tamanho = readlinesync.question("Tamanho (PP/P/M/G/GG): ");
+
+                    produtos.atualizar(
+                        new ProdutoVestuario(id, nome, preco, quantidade, material, tamanho)
+                    );
+
+                } else {
+                    console.log("Tipo inválido!");
+                }
+
                 keyPress()
                 break;
             case 5:
                 console.log("\n\nRemover produto\n\n");
+                id = readlinesync.questionInt("Digite o ID: ");
+                produtos.deletar(id);
 
                 keyPress()
                 break;
@@ -87,7 +202,7 @@ export function main(){
 
                 keyPress()
                 break;
-            
+
             default:
                 console.log("\nOpção inválida!\n");
 
